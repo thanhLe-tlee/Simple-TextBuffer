@@ -37,7 +37,7 @@ Students are required to:
 
 ## 🏷️ Compilation
 
-**Command (as required in the assignment spec):**
+**Command:**
 
 ```bash
 g++ -o main main.cpp TextBuffer.cpp -I . -std=c++17
