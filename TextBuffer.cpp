@@ -5,7 +5,7 @@ void throwOutOfIndex()
     throw out_of_range("Index is invalid!");
 }
 
-typename DoublyLinkedList<char>::Node *split(DoublyLinkedList<char>::Node *head)
+DoublyLinkedList<char>::Node *split(DoublyLinkedList<char>::Node *head)
 {
     DoublyLinkedList<char>::Node *fast = head;
     DoublyLinkedList<char>::Node *slow = head;
@@ -27,7 +27,7 @@ typename DoublyLinkedList<char>::Node *split(DoublyLinkedList<char>::Node *head)
     return temp;
 }
 
-typename DoublyLinkedList<char>::Node *merge(DoublyLinkedList<char>::Node *first, DoublyLinkedList<char>::Node *second)
+DoublyLinkedList<char>::Node *merge(DoublyLinkedList<char>::Node *first, DoublyLinkedList<char>::Node *second)
 {
     if (first == nullptr)
     {
@@ -75,7 +75,7 @@ typename DoublyLinkedList<char>::Node *merge(DoublyLinkedList<char>::Node *first
     }
 }
 
-typename DoublyLinkedList<char>::Node *mergeSort(DoublyLinkedList<char>::Node *head)
+DoublyLinkedList<char>::Node *mergeSort(DoublyLinkedList<char>::Node *head)
 {
     if (head == nullptr || head->getNext() == nullptr)
         return head;
@@ -482,9 +482,8 @@ void TextBuffer::moveCursorTo(int index)
 
 string TextBuffer::getContent() const
 {
-    // return buffer.toString();
     string content = "";
-    typename DoublyLinkedList<char>::Node *curr = buffer.getHead();
+    DoublyLinkedList<char>::Node *curr = buffer.getHead();
     while (curr != nullptr)
     {
         content += curr->getData();
@@ -521,8 +520,8 @@ void TextBuffer::sortAscending()
 
     tempList.setHead(mergeSort(tempList.getHead()));
     int count = 0;
-    typename DoublyLinkedList<char>::Node *current = tempList.getHead();
-    typename DoublyLinkedList<char>::Node *prevNode = nullptr;
+    DoublyLinkedList<char>::Node *current = tempList.getHead();
+    DoublyLinkedList<char>::Node *prevNode = nullptr;
     while (current != nullptr)
     {
         count++;
