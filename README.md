@@ -5,7 +5,7 @@
 This project implements a **simple text editor buffer** using **Object-Oriented Programming (OOP)** principles and a **Doubly Linked List (DLL)**.  
 It is designed for the **CO2003 Data Structures and Algorithms** course at Ho Chi Minh City University of Technology (HCMUT).
 
-Students are required to:
+This project targets are required to:
 - Master basic list data structures.
 - Apply sorting and searching algorithms.
 - Practice managing undo/redo operations for editing actions.
