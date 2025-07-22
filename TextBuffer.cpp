@@ -449,7 +449,7 @@ void TextBuffer::moveCursorLeft()
     {
         throw cursor_error();
     }
-    listAction->addAction("move", cursorPos, 'L');
+    listAction->addAction("move", cursorPos, static_cast<char>(cursorPos));
     cursorPos--;
 }
 
@@ -459,7 +459,8 @@ void TextBuffer::moveCursorRight()
     {
         throw cursor_error();
     }
-    listAction->addAction("move", cursorPos, 'R');
+    int index = cursorPos + 1;
+    listAction->addAction("move", cursorPos, static_cast<char>(index));
     cursorPos++;
 }
 
