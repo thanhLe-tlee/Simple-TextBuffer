@@ -32,8 +32,6 @@ public:
     int countOfOccurences(T data) const;
     int *listOccurrenceIndexes(T data, int count) const;
 
-    // add getter/ setter
-
     Node *getHead() const { return head; }
     void setHead(Node *newHead) { head = newHead; }
     Node *getTail() const { return tail; }
@@ -174,12 +172,16 @@ public:
         void moveCurrentLeft()
         {
             if (current)
+            {
                 current = current->prev;
+            }
         }
         void moveCurrentRight()
         {
             if (current)
+            {
                 current = current->next;
+            }
         }
         void clearRedoHistory();
     };

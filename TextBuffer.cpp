@@ -333,7 +333,6 @@ string DoublyLinkedList<T>::toString(string (*convert2str)(T &)) const
         }
         else
         {
-            // Provide default conversion for int, char, string, double, float
             if constexpr (std::is_same<T, int>::value || std::is_same<T, double>::value || std::is_same<T, float>::value)
             {
                 strList += std::to_string(curr->data);
@@ -348,7 +347,8 @@ string DoublyLinkedList<T>::toString(string (*convert2str)(T &)) const
             }
             else
             {
-                strList += "?";
+                // for point type
+                strList += "Point(" + std::to_string(curr->data.getX()) + ", " + std::to_string(curr->data.getY()) + ")";
             }
         }
         if (i != count - 1)

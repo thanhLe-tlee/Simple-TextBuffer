@@ -49,6 +49,8 @@ void assertEqual(const char *actual, const char *expected, int testNum, const st
     assertEqual<string>(string(actual), string(expected), testNum, msg);
 }
 
+// ---------------------------------------------------------------------------
+// *---------------------------- Test cua thay ------------------------------*
 void sample_01(int testNum)
 {
     DoublyLinkedList<int> dll;
@@ -142,7 +144,8 @@ void sample_07(int testNum)
     assertEqual(caught, true, testNum, "DoublyLinkedList out_of_range exception");
 }
 
-// More tests
+// ---------------------------------------------------------------------------
+// *----------------------- DoublyLinkedList Tests ---------------------------*
 
 // test insert
 void sample_08(int testNum)
@@ -723,7 +726,8 @@ void sample_51(int testNum)
     assertEqual(index, 4, testNum, "Index");
 }
 
-// Test TextBuffer
+// ---------------------------------------------------------------------------
+// *---------------------------- TextBuffer Tests ----------------------------*
 
 // test buffer initialization
 
