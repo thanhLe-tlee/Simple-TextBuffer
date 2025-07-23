@@ -2,9 +2,6 @@
 #include "TextBuffer.h"
 #include <string>
 #include <iostream>
-using std::cout;
-using std::endl;
-using std::string;
 
 #ifdef _WIN32
 #include <crtdbg.h>
@@ -36,11 +33,11 @@ void assertEqual(const T &actual, const T &expected, int testNum, const string &
 }
 
 // Overload for const char* and std::string
-void assertEqual(const std::string &actual, const char *expected, int testNum, const string &msg = "")
+void assertEqual(const string &actual, const char *expected, int testNum, const string &msg = "")
 {
     assertEqual<string>(actual, string(expected), testNum, msg);
 }
-void assertEqual(const char *actual, const std::string &expected, int testNum, const string &msg = "")
+void assertEqual(const char *actual, const string &expected, int testNum, const string &msg = "")
 {
     assertEqual<string>(string(actual), expected, testNum, msg);
 }
@@ -59,7 +56,7 @@ void sample_01(int testNum)
     dll.insertAtHead(1);
     string result = dll.toString();
     string expected = "[1, 2, 3]";
-    assertEqual(result, expected, testNum, "DoublyLinkedList<int> toString");
+    assertEqual(result, expected, testNum, "toString");
 }
 
 void sample_02(int testNum)
@@ -70,8 +67,8 @@ void sample_02(int testNum)
     dll.insertAtTail('C');
     int sizeResult = dll.size();
     char getResult = dll.get(1);
-    assertEqual(sizeResult, 3, testNum, "DoublyLinkedList<char> size");
-    assertEqual(getResult, 'B', testNum, "DoublyLinkedList<char> get(1)");
+    assertEqual(sizeResult, 3, testNum, "size");
+    assertEqual(getResult, 'B', testNum, "get(1)");
 }
 
 void sample_03(int testNum)
@@ -173,7 +170,7 @@ void sample_09(int testNum)
 
 void sample_10(int testNum)
 {
-    DoublyLinkedList<std::string> dll;
+    DoublyLinkedList<string> dll;
     dll.insertAtTail("Hello");
     dll.insertAtTail("World");
     dll.insertAtTail("!");
@@ -233,7 +230,7 @@ void sample_14(int testNum)
 
 void sample_15(int testNum)
 {
-    DoublyLinkedList<std::string> dll;
+    DoublyLinkedList<string> dll;
     dll.insertAtTail("First");
     dll.insertAtTail("Second");
     dll.insertAt(1, "Middle");
@@ -267,7 +264,7 @@ void sample_17(int testNum)
     {
         dll.insertAt(1, 1); // without head
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -291,7 +288,7 @@ void sample_18(int testNum)
     {
         dll.insertAt(10, 11); // without head
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -316,7 +313,7 @@ void sample_19(int testNum)
     {
         dll.insertAt(-2, 11); // without head
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -372,7 +369,7 @@ void sample_23(int testNum)
     {
         dll.deleteAt(5); // out of range
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -390,7 +387,7 @@ void sample_24(int testNum)
     {
         dll.deleteAt(-1); // negative index
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -440,7 +437,7 @@ void sample_28(int testNum)
     {
         dll.get(5); // out of range
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -458,7 +455,7 @@ void sample_29(int testNum)
     {
         dll.get(-1); // negative index
     }
-    catch (const std::out_of_range &)
+    catch (const out_of_range &)
     {
         caught = true;
     }
@@ -629,7 +626,7 @@ void sample_44(int testNum)
     dll.reverse();
     string result = dll.toString();
     string expected = "[1]";
-    assertEqual(result, expected, testNum, "Reverse single element list");
+    assertEqual(result, expected, testNum, "Reverse element list");
 }
 
 void sample_45(int testNum)
@@ -1681,7 +1678,6 @@ void run_tests()
     sample_99(99);
     sample_100(100);
     sample_101(101);
-
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
 
@@ -1689,16 +1685,18 @@ int main(int argc, char **argv)
 {
 #ifdef _WIN32
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
 #endif
     run_tests();
 #ifdef _WIN32
     if (!_CrtDumpMemoryLeaks())
     {
-        std::cout << COLOR_GREEN << "No memory leaks detected!" << COLOR_RESET << std::endl;
+        cout << COLOR_GREEN << "No memory leaks detected!" << COLOR_RESET << endl;
     }
     else
     {
-        std::cout << COLOR_RED << "Memory leaks detected!" << COLOR_RESET << std::endl;
+        cout << COLOR_RED << "Memory leaks detected!" << COLOR_RESET << endl;
     }
 #endif
 }
