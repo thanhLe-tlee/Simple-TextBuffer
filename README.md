@@ -41,3 +41,8 @@ This project targets are required to:
 
 ```bash
 g++ -o main main.cpp TextBuffer.cpp -I . -std=c++17
+```
+Then run:
+```bash
+./main
+```
