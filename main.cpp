@@ -1493,6 +1493,89 @@ void sample_97(int testNum)
     assertEqual(cursor, 5, testNum, "TextBuffer cursor position");
 }
 
+void sample_98(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteChar();
+    tb.insert('o');
+    tb.deleteChar();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.redo();
+    string result = tb.getContent();
+    string expected = "Hell";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete char and undo");
+    assertEqual(cursor, 4, testNum, "TextBuffer cursor position after undo");
+}
+
+void sample_99(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('c');
+    tb.deleteAllOccurrences('a');
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "bannc";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer deleteAllOccurrences and undo");
+    assertEqual(cursor, 2, testNum, "TextBuffer cursor position after undo");
+}
+
+void sample_100(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('c');
+    tb.deleteAllOccurrences('a');
+    tb.undo();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "bananc";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer deleteAllOccurrences and undo");
+    assertEqual(cursor, 4, testNum, "TextBuffer cursor position after undo");
+}
+
+void sample_101(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('n');
+    tb.insert('a');
+    tb.insert('c');
+    tb.deleteAllOccurrences('a');
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "banana";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer deleteAllOccurrences and undo");
+    assertEqual(cursor, 6, testNum, "TextBuffer cursor position after undo");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1594,6 +1677,10 @@ void run_tests()
     sample_95(95);
     sample_96(96);
     sample_97(97);
+    sample_98(98);
+    sample_99(99);
+    sample_100(100);
+    sample_101(101);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }

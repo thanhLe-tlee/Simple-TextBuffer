@@ -333,22 +333,22 @@ string DoublyLinkedList<T>::toString(string (*convert2str)(T &)) const
         }
         else
         {
-            if constexpr (std::is_same<T, int>::value || std::is_same<T, double>::value || std::is_same<T, float>::value)
+            if constexpr (is_same<T, int>::value || is_same<T, double>::value || is_same<T, float>::value)
             {
-                strList += std::to_string(curr->data);
+                strList += to_string(curr->data);
             }
-            else if constexpr (std::is_same<T, char>::value)
+            else if constexpr (is_same<T, char>::value)
             {
                 strList += curr->data;
             }
-            else if constexpr (std::is_same<T, std::string>::value)
+            else if constexpr (is_same<T, string>::value)
             {
                 strList += curr->data;
             }
             else
             {
                 // for point type
-                strList += "Point(" + std::to_string(curr->data.getX()) + ", " + std::to_string(curr->data.getY()) + ")";
+                strList += "Point(" + to_string(curr->data.getX()) + ", " + to_string(curr->data.getY()) + ")";
             }
         }
         if (i != count - 1)
