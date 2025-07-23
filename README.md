@@ -38,7 +38,7 @@ This project targets are required to:
 ## 🏷️ Compilation
 
 **Command:**
-
+First navigate to folder ../initial and compile: 
 ```bash
 g++ -o main main.cpp TextBuffer.cpp -I . -std=c++17
 ```
