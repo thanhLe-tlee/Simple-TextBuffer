@@ -1335,6 +1335,58 @@ void sample_89(int testNum)
     assertEqual(cursor, 3, testNum, "TextBuffer cursor position");
 }
 
+void sample_90(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('A');
+    tb.insert('B');
+    tb.insert('C');
+    tb.moveCursorLeft();
+    tb.insert('X');
+    tb.moveCursorRight();
+    tb.deleteChar();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer complex undo/redo");
+    assertEqual(cursor, 0, testNum, "TextBuffer cursor position");
+}
+
+void sample_91(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('A');
+    tb.insert('B');
+    tb.insert('C');
+    tb.moveCursorLeft();
+    tb.insert('X');
+    tb.moveCursorRight();
+    tb.deleteChar();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+    tb.redo();
+
+    string result = tb.getContent();
+    string expected = "ABX";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer complex undo/redo");
+    assertEqual(cursor, 3, testNum, "TextBuffer cursor position");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1428,6 +1480,8 @@ void run_tests()
     sample_87(87);
     sample_88(88);
     sample_89(89);
+    sample_90(90);
+    sample_91(91);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
