@@ -1704,6 +1704,40 @@ void sample_107(int testNum)
     delete result;
 }
 
+void sample_108(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('X');
+    tb.insert('Y');
+    tb.insert('Z');
+    tb.insert('z');
+    tb.insert('y');
+    tb.insert('l');
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.moveCursorTo(1);
+    tb.deleteChar();
+    tb.moveCursorTo(2);
+    tb.moveCursorRight();
+    tb.moveCursorLeft();
+    tb.moveCursorLeft();
+    tb.sortAscending();
+    tb.deleteAllOccurrences('l');
+    tb.moveCursorRight();
+    int index = tb.findFirstOccurrence('l');
+    string *result = tb.printStringHistory();
+    int cursor = tb.getCursorPos();
+    assertEqual(index, -1, testNum, "TextBuffer find first occurrence after undo");
+    assertEqual(cursor, 1, testNum, "TextBuffer cursor position after undo");
+    assertEqual(tb.getContent(), "eHoYyZz", testNum, "TextBuffer content after undo");
+    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 1, J), (delete, 0, X), (move, 2, J), (move, 3, R), (move, 2, L), (move, 1, L), (sort, 0, \\0), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 1, R)]";
+    assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
+    delete result;
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1815,6 +1849,7 @@ void run_tests()
     sample_105(105);
     sample_106(106);
     sample_107(107);
+    sample_108(108);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
