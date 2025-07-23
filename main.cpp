@@ -32,7 +32,6 @@ void assertEqual(const T &actual, const T &expected, int testNum, const string &
     }
 }
 
-// Overload for const char* and std::string
 void assertEqual(const string &actual, const char *expected, int testNum, const string &msg = "")
 {
     assertEqual<string>(actual, string(expected), testNum, msg);
