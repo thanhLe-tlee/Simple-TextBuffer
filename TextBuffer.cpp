@@ -403,13 +403,13 @@ TextBuffer::TextBuffer()
 {
     // TODO
     this->cursorPos = 0;
-    this->listAction = new HistoryManager();
+    this->historyManager = new HistoryManager();
 }
 
 TextBuffer::~TextBuffer()
 {
     // TODO
-    delete listAction;
+    delete historyManager;
 }
 
 void TextBuffer::insert(char c)
@@ -426,7 +426,7 @@ void TextBuffer::insert(char c)
     {
         buffer.insertAt(cursorPos, c);
     }
-    listAction->addAction("insert", cursorPos, c);
+    historyManager->addAction("insert", cursorPos, c);
     cursorPos++;
 }
 
@@ -440,7 +440,7 @@ void TextBuffer::deleteChar()
     char deletedChar = buffer.get(cursorPos - 1);
     buffer.deleteAt(cursorPos - 1);
     cursorPos--;
-    listAction->addAction("delete", cursorPos, deletedChar);
+    historyManager->addAction("delete", cursorPos, deletedChar);
 }
 
 void TextBuffer::moveCursorLeft()
@@ -449,7 +449,7 @@ void TextBuffer::moveCursorLeft()
     {
         throw cursor_error();
     }
-    listAction->addAction("move", cursorPos, static_cast<char>(cursorPos));
+    historyManager->addAction("move", cursorPos, static_cast<char>(cursorPos));
     cursorPos--;
 }
 
@@ -460,7 +460,7 @@ void TextBuffer::moveCursorRight()
         throw cursor_error();
     }
     int index = cursorPos + 1;
-    listAction->addAction("move", cursorPos, static_cast<char>(index));
+    historyManager->addAction("move", cursorPos, static_cast<char>(index));
     cursorPos++;
 }
 
@@ -476,7 +476,7 @@ void TextBuffer::moveCursorTo(int index)
         return;
     }
 
-    listAction->addAction("move", index, static_cast<char>(cursorPos));
+    historyManager->addAction("move", index, static_cast<char>(cursorPos));
     cursorPos = index;
 }
 
@@ -537,7 +537,7 @@ void TextBuffer::sortAscending()
     tempList.setHead(nullptr);
     tempList.setTail(nullptr);
     tempList.setCount(0);
-    listAction->addAction("sort", 0, '\0');
+    historyManager->addAction("sort", 0, '\0');
     cursorPos = 0;
 }
 
@@ -549,7 +549,7 @@ void TextBuffer::deleteAllOccurrences(char c)
         buffer.deleteAt(indexes[i]);
         if (cursorPos > indexes[i])
             cursorPos--;
-        listAction->addAction("delete", indexes[i], c);
+        historyManager->addAction("delete", indexes[i], c);
     }
     if (cursorPos > buffer.size())
         cursorPos = buffer.size();
@@ -559,12 +559,12 @@ void TextBuffer::deleteAllOccurrences(char c)
 
 void TextBuffer::undo()
 {
-    if (listAction->current == nullptr)
+    if (historyManager->current == nullptr)
     {
         return;
     }
 
-    HistoryManager::Action *actionToUndo = listAction->current->action;
+    HistoryManager::Action *actionToUndo = historyManager->current->action;
 
     if (actionToUndo->actionName == "insert")
     {
@@ -586,18 +586,18 @@ void TextBuffer::undo()
         cursorPos = actionToUndo->cursorPos;
     }
 
-    listAction->moveCurrentLeft();
+    historyManager->moveCurrentLeft();
 }
 
 void TextBuffer::redo()
 {
-    if (listAction->current == nullptr || listAction->current->next == nullptr)
+    if (historyManager->current == nullptr || historyManager->current->next == nullptr)
     {
         return;
     }
 
-    listAction->moveCurrentRight();
-    HistoryManager::Action *actionToRedo = listAction->current->action;
+    historyManager->moveCurrentRight();
+    HistoryManager::Action *actionToRedo = historyManager->current->action;
 
     if (actionToRedo->actionName == "insert")
     {

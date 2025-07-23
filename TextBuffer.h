@@ -95,7 +95,7 @@ public:
 private:
     DoublyLinkedList<char> buffer;
     int cursorPos;
-    HistoryManager *listAction;
+    HistoryManager *historyManager;
 
     // TODO: may provide some attributes
 
@@ -116,6 +116,10 @@ public:
     void deleteAllOccurrences(char c);
     void undo();
     void redo();
+    void printHistory() const
+    {
+        historyManager->printHistory();
+    }
 
 public:
     class HistoryManager
