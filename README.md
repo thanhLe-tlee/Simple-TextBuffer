@@ -37,12 +37,21 @@ This project targets are required to:
 
 ## 🏷️ Compilation
 
-**Command:**
-First navigate to folder ../initial and compile: 
+**📋 Instructions:**
+
+1️⃣ **Navigate to the project directory:**
+```bash
+cd path/to/Simple-TextBuffer-main
+```
+
+2️⃣ **Compile the project:**
 ```bash
 g++ -o main main.cpp TextBuffer.cpp -I . -std=c++17
 ```
-Then run:
+
+3️⃣ **Run the application:**
 ```bash
 ./main
 ```
+
+🎉 **Enjoy testing your Text Buffer implementation!**
