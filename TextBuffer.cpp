@@ -46,14 +46,18 @@ DoublyLinkedList<char>::Node *merge(DoublyLinkedList<char>::Node *first, DoublyL
     {
         first->setNext(merge(first->getNext(), second));
         if (first->getNext())
+        {
             first->getNext()->setPrev(first); // Update prev pointer
+        }
         return first;
     }
     else if (data1_lower > data2_lower)
     {
         second->setNext(merge(first, second->getNext()));
         if (second->getNext())
+        {
             second->getNext()->setPrev(second);
+        }
         return second;
     }
     else
@@ -449,8 +453,8 @@ void TextBuffer::moveCursorLeft()
     {
         throw cursor_error();
     }
-    historyManager->addAction("move", cursorPos, static_cast<char>(cursorPos));
     cursorPos--;
+    historyManager->addAction("move", cursorPos, 'L');
 }
 
 void TextBuffer::moveCursorRight()
@@ -459,9 +463,8 @@ void TextBuffer::moveCursorRight()
     {
         throw cursor_error();
     }
-    int index = cursorPos + 1;
-    historyManager->addAction("move", cursorPos, static_cast<char>(index));
     cursorPos++;
+    historyManager->addAction("move", cursorPos, 'R');
 }
 
 void TextBuffer::moveCursorTo(int index)
@@ -476,8 +479,8 @@ void TextBuffer::moveCursorTo(int index)
         return;
     }
 
-    historyManager->addAction("move", index, static_cast<char>(cursorPos));
     cursorPos = index;
+    historyManager->addAction("move", index, 'J');
 }
 
 string TextBuffer::getContent() const
@@ -551,10 +554,18 @@ void TextBuffer::deleteAllOccurrences(char c)
             cursorPos--;
         historyManager->addAction("delete", indexes[i], c);
     }
+
     if (cursorPos > buffer.size())
+    {
         cursorPos = buffer.size();
+    }
+
     delete[] indexes;
-    cursorPos = 0;
+
+    if (count > 0)
+    {
+        cursorPos = 0;
+    }
 }
 
 void TextBuffer::undo()
@@ -578,8 +589,31 @@ void TextBuffer::undo()
     }
     else if (actionToUndo->actionName == "move")
     {
-        // Undo move: restore previous cursor position (stored in data)
-        cursorPos = static_cast<unsigned char>(actionToUndo->data);
+        HistoryManager::Node *prevNode = historyManager->current->prev;
+        if (prevNode != nullptr)
+        {
+            HistoryManager::Action *prevAction = prevNode->action;
+            if (prevAction->actionName == "insert")
+            {
+                cursorPos = prevAction->cursorPos + 1;
+            }
+            else if (prevAction->actionName == "delete")
+            {
+                cursorPos = prevAction->cursorPos;
+            }
+            else if (prevAction->actionName == "move")
+            {
+                cursorPos = prevAction->cursorPos;
+            }
+            else
+            {
+                cursorPos = prevAction->cursorPos;
+            }
+        }
+        else
+        {
+            cursorPos = 0;
+        }
     }
     else if (actionToUndo->actionName == "sort")
     {
@@ -611,7 +645,6 @@ void TextBuffer::redo()
     }
     else if (actionToRedo->actionName == "move")
     {
-        // Redo move: restore new cursor position (stored in cursorPos)
         cursorPos = actionToRedo->cursorPos;
     }
     else if (actionToRedo->actionName == "sort")

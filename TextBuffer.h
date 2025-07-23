@@ -121,6 +121,11 @@ public:
         historyManager->printHistory();
     }
 
+    string *printStringHistory() const
+    {
+        return historyManager->getHistoryString();
+    }
+
 public:
     class HistoryManager
     {
