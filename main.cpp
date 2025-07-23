@@ -1387,6 +1387,22 @@ void sample_91(int testNum)
     assertEqual(cursor, 3, testNum, "TextBuffer cursor position");
 }
 
+// test size of historyManager
+
+void sample_92(int testNum)
+{
+    TextBuffer::HistoryManager hm;
+    hm.addAction("insert", 0, 'A');
+    hm.addAction("insert", 1, 'B');
+    hm.addAction("insert", 2, 'C');
+    hm.addAction("move", 3, 'L');
+    hm.addAction("insert", 2, 'X');
+    hm.addAction("move", 3, 'R');
+    hm.addAction("delete", 4, 'C');
+    int size = hm.size();
+    assertEqual(size, 7, testNum, "TextBuffer history size");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1482,6 +1498,7 @@ void run_tests()
     sample_89(89);
     sample_90(90);
     sample_91(91);
+    sample_92(92);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
