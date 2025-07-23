@@ -1403,6 +1403,96 @@ void sample_92(int testNum)
     assertEqual(size, 7, testNum, "TextBuffer history size");
 }
 
+// test deleteAllOccurrences with cursor movement
+
+void sample_93(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    // tb.moveCursorTo(2);
+    tb.deleteAllOccurrences('l');
+    string result = tb.getContent();
+    string expected = "Heo";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
+    assertEqual(cursor, 0, testNum, "TextBuffer cursor position");
+}
+
+void sample_94(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteAllOccurrences('l');
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "Helo";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
+    assertEqual(cursor, 3, testNum, "TextBuffer cursor position");
+}
+
+void sample_95(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteAllOccurrences('l');
+    tb.undo();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "Hello";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
+    assertEqual(cursor, 4, testNum, "TextBuffer cursor position");
+}
+
+void sample_96(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteAllOccurrences('l');
+    tb.undo();
+    tb.redo();
+    string result = tb.getContent();
+    string expected = "Heo";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
+    assertEqual(cursor, 2, testNum, "TextBuffer cursor position");
+}
+
+void sample_97(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteAllOccurrences('f');
+    tb.undo();
+    tb.redo();
+    string result = tb.getContent();
+    string expected = "Hello";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
+    assertEqual(cursor, 5, testNum, "TextBuffer cursor position");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1499,6 +1589,11 @@ void run_tests()
     sample_90(90);
     sample_91(91);
     sample_92(92);
+    sample_93(93);
+    sample_94(94);
+    sample_95(95);
+    sample_96(96);
+    sample_97(97);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }

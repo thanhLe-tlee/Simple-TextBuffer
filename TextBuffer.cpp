@@ -549,10 +549,12 @@ void TextBuffer::deleteAllOccurrences(char c)
         buffer.deleteAt(indexes[i]);
         if (cursorPos > indexes[i])
             cursorPos--;
+        listAction->addAction("delete", indexes[i], c);
     }
     if (cursorPos > buffer.size())
         cursorPos = buffer.size();
     delete[] indexes;
+    cursorPos = 0;
 }
 
 void TextBuffer::undo()
