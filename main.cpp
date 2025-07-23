@@ -1738,6 +1738,32 @@ void sample_108(int testNum)
     delete result;
 }
 
+void sample_109(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('X');
+    tb.insert('Y');
+    tb.insert('Z');
+    tb.insert('z');
+    tb.insert('y');
+    tb.insert('l');
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    int index = tb.findFirstOccurrence('l');
+    tb.sortAscending();
+    int index3 = tb.findFirstOccurrence('l');
+    string content = tb.getContent();
+    tb.deleteAllOccurrences('l');
+    int index2 = tb.findFirstOccurrence('l');
+    string result = to_string(index) + ", " + to_string(index2) + ", " + to_string(index3);
+    string expected = "5, -1, 2";
+    assertEqual(content, "eHllloXYyZz", testNum, "TextBuffer content");
+    assertEqual(result, expected, testNum, "TextBuffer find first occurrence after deleteAllOccurrences");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1850,6 +1876,7 @@ void run_tests()
     sample_106(106);
     sample_107(107);
     sample_108(108);
+    sample_109(109);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
