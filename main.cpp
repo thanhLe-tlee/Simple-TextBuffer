@@ -1,7 +1,5 @@
 
 #include "TextBuffer.h"
-#include <string>
-#include <iostream>
 
 #ifdef _WIN32
 #include <crtdbg.h>
@@ -1764,6 +1762,21 @@ void sample_109(int testNum)
     assertEqual(result, expected, testNum, "TextBuffer find first occurrence after deleteAllOccurrences");
 }
 
+void sample_110(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('X');
+    tb.insert('Y');
+    tb.insert('Z');
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "";
+    assertEqual(result, expected, testNum, "TextBuffer undo all operations");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1877,6 +1890,7 @@ void run_tests()
     sample_107(107);
     sample_108(108);
     sample_109(109);
+    sample_110(110);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
