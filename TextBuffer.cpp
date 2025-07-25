@@ -388,7 +388,7 @@ int *DoublyLinkedList<T>::listOccurrenceIndexes(T data, int count) const
     Node *curr = head;
     int idx = 0;
 
-    for (int i = 0; i < this->count && curr != nullptr; i++)
+    for (int i = 0; i < this->count && curr != nullptr && idx < count; i++)
     {
         if (curr->data == data)
         {
@@ -547,7 +547,7 @@ void TextBuffer::sortAscending()
 void TextBuffer::deleteAllOccurrences(char c)
 {
     int count, *indexes = findAllOccurrences(c, count);
-    for (int i = count - 1; i >= 0; --i)
+    for (int i = count - 1; i >= 0; i--)
     {
         buffer.deleteAt(indexes[i]);
         if (cursorPos > indexes[i])

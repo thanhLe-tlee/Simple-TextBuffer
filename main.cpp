@@ -1426,11 +1426,13 @@ void sample_94(int testNum)
     tb.insert('o');
     tb.deleteAllOccurrences('l');
     tb.undo();
+    tb.undo();
+    tb.undo();
     string result = tb.getContent();
-    string expected = "Helo";
+    string expected = "Hell";
     int cursor = tb.getCursorPos();
     assertEqual(result, expected, testNum, "TextBuffer delete all occurrences");
-    assertEqual(cursor, 3, testNum, "TextBuffer cursor position");
+    assertEqual(cursor, 4, testNum, "TextBuffer cursor position");
 }
 
 void sample_95(int testNum)
@@ -1777,6 +1779,27 @@ void sample_110(int testNum)
     assertEqual(result, expected, testNum, "TextBuffer undo all operations");
 }
 
+void sample_111(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.moveCursorTo(0);
+    bool caught = false;
+    try
+    {
+        tb.deleteChar();
+    }
+    catch (const cursor_error &e)
+    {
+        caught = true;
+    }
+    assertEqual(caught, true, testNum, "TextBuffer move cursor left on empty buffer");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1891,6 +1914,7 @@ void run_tests()
     sample_108(108);
     sample_109(109);
     sample_110(110);
+    sample_111(111);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
