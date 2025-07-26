@@ -1817,6 +1817,87 @@ void sample_112(int testNum)
     assertEqual(cursor, 2, testNum, "TextBuffer cursor position");
 }
 
+void sample_113(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.undo();
+    tb.redo();
+    tb.undo();
+    string *result = tb.printStringHistory();
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (delete, 4, o), (insert, 4, o), (delete, 4, o)]";
+
+    assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo/redo");
+    delete result;
+}
+
+void sample_114(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('c');
+    tb.insert('b');
+    tb.insert('a');
+    tb.sortAscending();
+    tb.undo();
+    string result = tb.getContent();
+    string expected = "cba";
+    assertEqual(result, expected, testNum, "TextBuffer sort ascending");
+    string *history = tb.printStringHistory();
+    cout << *history << endl;
+    delete history;
+}
+
+void sample_115(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('c');
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('d');
+    tb.insert('F');
+    tb.insert('E');
+    tb.insert('D');
+    tb.insert('C');
+    tb.insert('B');
+    tb.insert('A');
+    tb.insert('1');
+    tb.insert('2');
+    tb.insert('5');
+    tb.insert('4');
+    tb.insert('!');
+    tb.insert('@');
+    tb.insert('#');
+    tb.insert('*');
+    tb.insert('^');
+    tb.sortAscending();
+    string result = tb.getContent();
+    string expected = "!#*1245@^AaBbCcDdEF";
+    assertEqual(result, expected, testNum, "TextBuffer sort ascending with special characters");
+}
+
+void sample_116(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('c');
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('d');
+    tb.insert('F');
+    tb.insert('E');
+    tb.insert('D');
+    tb.sortAscending();
+    tb.insert('C');
+    int cursor = tb.getCursorPos();
+    string result = tb.getContent();
+    string expected = "CabcDdEF";
+    assertEqual(result, expected, testNum, "TextBuffer sort ascending with insert after sort");
+    assertEqual(cursor, 1, testNum, "TextBuffer cursor position after insert");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -1933,6 +2014,10 @@ void run_tests()
     sample_110(110);
     sample_111(111);
     sample_112(112);
+    // sample_113(113);
+    // sample_114(114);
+    sample_115(115);
+    sample_116(116);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
