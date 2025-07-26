@@ -1898,6 +1898,26 @@ void sample_116(int testNum)
     assertEqual(cursor, 1, testNum, "TextBuffer cursor position after insert");
 }
 
+void sample_117(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('c');
+    tb.insert('b');
+    tb.insert('a');
+    tb.insert('d');
+    tb.insert('F');
+    tb.insert('E');
+    tb.insert('D');
+    tb.sortAscending();
+    tb.moveCursorTo(4);
+    tb.sortAscending();
+    int cursor = tb.getCursorPos();
+    string result = tb.getContent();
+    string expected = "abcDdEF";
+    assertEqual(result, expected, testNum, "TextBuffer sort ascending with insert after sort");
+    assertEqual(cursor, 0, testNum, "TextBuffer cursor position after insert");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -2018,6 +2038,7 @@ void run_tests()
     // sample_114(114);
     sample_115(115);
     sample_116(116);
+    sample_117(117);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
