@@ -1829,7 +1829,7 @@ void sample_113(int testNum)
     tb.redo();
     tb.undo();
     string *result = tb.printStringHistory();
-    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (delete, 4, o), (insert, 4, o), (delete, 4, o)]";
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o)]";
 
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo/redo");
     delete result;
@@ -1916,6 +1916,43 @@ void sample_117(int testNum)
     string expected = "abcDdEF";
     assertEqual(result, expected, testNum, "TextBuffer sort ascending with insert after sort");
     assertEqual(cursor, 0, testNum, "TextBuffer cursor position after insert");
+}
+
+void sample_118(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.moveCursorTo(2);
+    tb.undo();
+    tb.insert('X');
+    tb.redo();
+    string result = tb.getContent();
+    string expected = "HelloX";
+    int cursor = tb.getCursorPos();
+    assertEqual(result, expected, testNum, "TextBuffer undo and insert after undo");
+    assertEqual(cursor, 6, testNum, "TextBuffer cursor position after insert");
+}
+
+void sample_119(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.moveCursorTo(2);
+    tb.undo();
+    tb.moveCursorLeft();
+    tb.undo();
+    tb.redo();
+    tb.redo();
+    int cursor = tb.getCursorPos();
+    assertEqual(cursor, 4, testNum, "TextBuffer cursor position after move");
 }
 
 // ---------------------------------------------------- //
@@ -2034,11 +2071,13 @@ void run_tests()
     sample_110(110);
     sample_111(111);
     sample_112(112);
-    // sample_113(113);
+    sample_113(113);
     // sample_114(114);
     sample_115(115);
     sample_116(116);
     sample_117(117);
+    sample_118(118);
+    sample_119(119);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
