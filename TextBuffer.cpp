@@ -712,7 +712,7 @@ void TextBuffer::HistoryManager::printHistory() const
         historyStr += "(" + curr->action->actionName + ", " + to_string(curr->action->cursorPos) + ", ";
         if (curr->action->data == '\0')
         {
-            historyStr += "\\0";
+            historyStr += "\0"; 
         }
         else
         {
@@ -738,7 +738,7 @@ string *TextBuffer::HistoryManager::getHistoryString() const
         *historyStr += "(" + curr->action->actionName + ", " + to_string(curr->action->cursorPos) + ", ";
         if (curr->action->data == '\0')
         {
-            *historyStr += "\\0";
+            *historyStr += "\0";
         }
         else
         {
