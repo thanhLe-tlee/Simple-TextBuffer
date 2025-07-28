@@ -418,6 +418,7 @@ TextBuffer::~TextBuffer()
 
 void TextBuffer::insert(char c)
 {
+    historyManager->addAction("insert", cursorPos, c);
     if (cursorPos == 0)
     {
         buffer.insertAtHead(c);
@@ -430,7 +431,6 @@ void TextBuffer::insert(char c)
     {
         buffer.insertAt(cursorPos, c);
     }
-    historyManager->addAction("insert", cursorPos, c);
     cursorPos++;
 }
 
@@ -442,9 +442,9 @@ void TextBuffer::deleteChar()
     }
 
     char deletedChar = buffer.get(cursorPos - 1);
+    historyManager->addAction("delete", cursorPos - 1, deletedChar);
     buffer.deleteAt(cursorPos - 1);
     cursorPos--;
-    historyManager->addAction("delete", cursorPos, deletedChar);
 }
 
 void TextBuffer::moveCursorLeft()
@@ -453,8 +453,8 @@ void TextBuffer::moveCursorLeft()
     {
         throw cursor_error();
     }
-    cursorPos--;
     historyManager->addAction("move", cursorPos, 'L');
+    cursorPos--;
 }
 
 void TextBuffer::moveCursorRight()
@@ -463,8 +463,8 @@ void TextBuffer::moveCursorRight()
     {
         throw cursor_error();
     }
-    cursorPos++;
     historyManager->addAction("move", cursorPos, 'R');
+    cursorPos++;
 }
 
 void TextBuffer::moveCursorTo(int index)
@@ -479,8 +479,8 @@ void TextBuffer::moveCursorTo(int index)
         return;
     }
 
+    historyManager->addAction("move", cursorPos, 'J', index);
     cursorPos = index;
-    historyManager->addAction("move", index, 'J');
 }
 
 string TextBuffer::getContent() const
@@ -540,7 +540,7 @@ void TextBuffer::sortAscending()
     tempList.setHead(nullptr);
     tempList.setTail(nullptr);
     tempList.setCount(0);
-    historyManager->addAction("sort", 0, '\0');
+    historyManager->addAction("sort", cursorPos, '\0');
     cursorPos = 0;
 }
 
@@ -589,31 +589,7 @@ void TextBuffer::undo()
     }
     else if (actionToUndo->actionName == "move")
     {
-        HistoryManager::Node *prevNode = historyManager->current->prev;
-        if (prevNode != nullptr)
-        {
-            HistoryManager::Action *prevAction = prevNode->action;
-            if (prevAction->actionName == "insert")
-            {
-                cursorPos = prevAction->cursorPos + 1;
-            }
-            else if (prevAction->actionName == "delete")
-            {
-                cursorPos = prevAction->cursorPos;
-            }
-            else if (prevAction->actionName == "move")
-            {
-                cursorPos = prevAction->cursorPos;
-            }
-            else
-            {
-                cursorPos = prevAction->cursorPos;
-            }
-        }
-        else
-        {
-            cursorPos = 0;
-        }
+        cursorPos = actionToUndo->cursorPos;
     }
     else if (actionToUndo->actionName == "sort")
     {
@@ -658,7 +634,18 @@ void TextBuffer::redo()
     }
     else if (actionToRedo->actionName == "move")
     {
-        cursorPos = actionToRedo->cursorPos;
+        if (actionToRedo->data == 'J')
+        {
+            cursorPos = actionToRedo->targetPos;
+        }
+        else if (actionToRedo->data == 'L')
+        {
+            cursorPos = actionToRedo->cursorPos - 1;
+        }
+        else if (actionToRedo->data == 'R')
+        {
+            cursorPos = actionToRedo->cursorPos + 1;
+        }
     }
     else if (actionToRedo->actionName == "sort")
     {
@@ -697,10 +684,10 @@ TextBuffer::HistoryManager::~HistoryManager()
 
 // TODO: implement other methods of HistoryManager
 
-void TextBuffer::HistoryManager::addAction(const string &actionName, int cursorPos, char c)
+void TextBuffer::HistoryManager::addAction(const string &actionName, int cursorPos, char c, int targetPos)
 {
     clearRedoHistory();
-    Action *newAction = new Action(actionName, cursorPos, c);
+    Action *newAction = new Action(actionName, cursorPos, c, targetPos);
     Node *newNode = new Node(newAction);
     if (actionHead == nullptr)
     {

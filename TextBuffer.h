@@ -137,7 +137,8 @@ public:
             string actionName;
             int cursorPos;
             char data;
-            Action(string name, int pos, char c) : actionName(name), cursorPos(pos), data(c) {}
+            int targetPos; 
+            Action(string name, int pos, char c, int target = -1) : actionName(name), cursorPos(pos), data(c), targetPos(target) {}
         };
 
         class Node
@@ -173,7 +174,7 @@ public:
         HistoryManager();
         ~HistoryManager();
         string *getHistoryString() const;
-        void addAction(const string &actionName, int cursorPos, char c);
+        void addAction(const string &actionName, int cursorPos, char c, int targetPos = -1);
         void printHistory() const;
         int size() const;
 
