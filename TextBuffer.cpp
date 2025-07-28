@@ -625,13 +625,26 @@ void TextBuffer::undo()
 
 void TextBuffer::redo()
 {
-    if (historyManager->current == nullptr || historyManager->current->next == nullptr)
+    HistoryManager::Action *actionToRedo = nullptr;
+
+    if (historyManager->current == nullptr)
+    {
+        if (historyManager->actionHead == nullptr)
+        {
+            return;
+        }
+        historyManager->current = historyManager->actionHead;
+        actionToRedo = historyManager->current->action;
+    }
+    else if (historyManager->current->next == nullptr)
     {
         return;
     }
-
-    historyManager->moveCurrentRight();
-    HistoryManager::Action *actionToRedo = historyManager->current->action;
+    else
+    {
+        historyManager->moveCurrentRight();
+        actionToRedo = historyManager->current->action;
+    }
 
     if (actionToRedo->actionName == "insert")
     {
@@ -712,7 +725,7 @@ void TextBuffer::HistoryManager::printHistory() const
         historyStr += "(" + curr->action->actionName + ", " + to_string(curr->action->cursorPos) + ", ";
         if (curr->action->data == '\0')
         {
-            historyStr += "\0"; 
+            historyStr += "\0";
         }
         else
         {

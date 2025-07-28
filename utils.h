@@ -5,6 +5,24 @@
 #include <cmath>
 #include <string>
 
+// Ném lỗi nếu điều kiện sai
+#define EXPECT_TRUE(cond) \
+    if (!(cond))          \
+        throw std::runtime_error(std::string("EXPECT_TRUE failed: ") + #cond);
+
+// So sánh bằng
+#define EXPECT_EQ(actual, expected)                        \
+    if ((actual) != (expected))                            \
+    {                                                      \
+        std::ostringstream oss;                            \
+        oss << "EXPECT_EQ failed:\n  actual: " << (actual) \
+            << "\nexpected: " << (expected);               \
+        throw std::runtime_error(oss.str());               \
+    }                                                      \
+    else                                                  \
+    {                                                      \
+        std::cout << "Test passed: " << #actual << " == " << #expected << std::endl; \
+    }
 /**
  * @class Point
  * @brief Represents a point in 3D coordinate system (Oxyz)

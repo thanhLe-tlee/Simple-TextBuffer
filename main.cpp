@@ -99,6 +99,9 @@ void sample_05(int testNum)
     hm.addAction("insert", 1, 'b');
     int size = hm.size();
     assertEqual(size, 2, testNum, "HistoryManager size");
+    string *result = hm.getHistoryString();
+    assertEqual(*result, "[(insert, 0, a), (insert, 1, b)]", testNum, "HistoryManager getHistoryString");
+    delete result;
 }
 
 void sample_06(int testNum)
@@ -1955,6 +1958,751 @@ void sample_119(int testNum)
     assertEqual(cursor, 4, testNum, "TextBuffer cursor position after move");
 }
 
+void sample_120(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    EXPECT_EQ(buf.getContent(), "ab");
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.undo();
+    EXPECT_EQ(buf.getContent(), "a");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.undo();
+    EXPECT_EQ(buf.getContent(), "");
+    EXPECT_EQ(buf.getCursorPos(), 0);
+}
+
+void sample_121(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z');     // xyz
+    buf.moveCursorTo(2); // cursor giữa x và y
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.deleteChar(); // xz
+    EXPECT_EQ(buf.getContent(), "xz");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.undo(); // undo delete → khôi phục y
+    EXPECT_EQ(buf.getContent(), "xyz");
+    EXPECT_EQ(buf.getCursorPos(), 2); // cursor sau 'y'
+}
+
+void sample_122(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');     // abc
+    buf.moveCursorTo(3); // sau 'c'
+    EXPECT_EQ(buf.getCursorPos(), 3);
+
+    buf.moveCursorLeft(); // cursor: 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.undo(); // quay lại 3
+    EXPECT_EQ(buf.getCursorPos(), 3);
+}
+
+void sample_123(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('1');
+    buf.insert('2');
+    buf.insert('3');     // 123
+    buf.moveCursorTo(1); // giữa 1 và 2
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.moveCursorRight(); // cursor: 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.undo(); // quay lại 1
+    EXPECT_EQ(buf.getCursorPos(), 1);
+}
+
+void sample_124(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z'); // xyz
+
+    buf.moveCursorTo(0);
+    EXPECT_EQ(buf.getCursorPos(), 0);
+
+    buf.moveCursorTo(2);
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.undo();
+    EXPECT_EQ(buf.getCursorPos(), 0);
+}
+
+void sample_125(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('c');
+    buf.insert('a');
+    buf.insert('b');
+    buf.sortAscending();
+    EXPECT_EQ(buf.getContent(), "abc");
+    EXPECT_EQ(buf.getCursorPos(), 0);
+}
+
+void sample_126(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('b');
+    buf.insert('A');
+    buf.insert('a');
+    buf.insert('B');
+    buf.sortAscending();
+    EXPECT_EQ(buf.getContent(), "AaBb");
+}
+
+void sample_127(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('z');
+    buf.insert('a');
+    buf.insert('z');
+    buf.insert('a');
+    buf.insert('m');
+    buf.sortAscending();
+    EXPECT_EQ(buf.getContent(), "aamzz");
+}
+
+void sample_128(int testNum)
+{
+    TextBuffer buf;
+    std::string input = "zAbYyBaaCcZxXxMmNnOoPp";
+    for (char ch : input)
+    {
+        buf.insert(ch);
+    }
+
+    buf.sortAscending();
+
+    EXPECT_EQ(buf.getContent(), "AaaBbCcMmNnOoPpXxxYyZz");
+}
+
+void sample_129(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.undo();
+    buf.undo();
+
+    EXPECT_EQ(buf.getContent(), "");
+    EXPECT_EQ(buf.getCursorPos(), 0);
+
+    buf.redo();
+    EXPECT_EQ(buf.getContent(), "a");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.redo();
+    EXPECT_EQ(buf.getContent(), "ab");
+    EXPECT_EQ(buf.getCursorPos(), 2);
+}
+
+void sample_130(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z');     // xyz
+    buf.moveCursorTo(2); // cursor giữa x và y
+    buf.deleteChar();    // xz
+
+    EXPECT_EQ(buf.getContent(), "xz");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+    buf.undo(); // xyz
+
+    EXPECT_EQ(buf.getContent(), "xyz");
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    buf.redo(); // xz
+    EXPECT_EQ(buf.getContent(), "xz");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+}
+
+void sample_131(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');      // abc
+    buf.moveCursorTo(3);  // sau 'c'
+    buf.moveCursorLeft(); // cursor: 2
+    buf.undo();           // cursor: 3
+
+    EXPECT_EQ(buf.getCursorPos(), 3);
+
+    buf.redo(); // quay lại 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+}
+
+void sample_132(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('1');
+    buf.insert('2');
+    buf.insert('3');       // 123
+    buf.moveCursorTo(1);   // giữa 1 và 2
+    buf.moveCursorRight(); // cursor: 2
+    buf.undo();            // cursor: 1
+
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.redo(); // quay lại 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+}
+
+void sample_133(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z'); // xyz
+
+    buf.moveCursorTo(0); // cursor: 3
+    buf.moveCursorTo(2); // cursor: 0
+    buf.undo();
+
+    EXPECT_EQ(buf.getCursorPos(), 0); // cursor: 0
+
+    buf.redo(); // cursor: 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+}
+
+void sample_134(int testNum)
+{
+    TextBuffer buf;
+
+    // Step 1: insert('A')
+    buf.insert('A');
+    EXPECT_EQ(buf.getContent(), "A");
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    // Step 2: insert('B')
+    buf.insert('B');
+    EXPECT_EQ(buf.getContent(), "AB");
+    EXPECT_EQ(buf.getCursorPos(), 2);
+
+    // Step 3: insert('C')
+    buf.insert('C');
+    EXPECT_EQ(buf.getContent(), "ABC");
+    EXPECT_EQ(buf.getCursorPos(), 3);
+
+    // Step 4: moveCursorLeft()
+    buf.moveCursorLeft();
+    EXPECT_EQ(buf.getContent(), "ABC");
+    EXPECT_EQ(buf.getCursorPos(), 2); // AB|C
+
+    // Step 5: insert('X')
+    buf.insert('X');
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 3); // ABX|C
+
+    // Step 6: moveCursorRight()
+    buf.moveCursorRight();
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 4); // ABXC|
+
+    // Step 7: deleteChar() (delete 'C')
+    buf.deleteChar();
+    EXPECT_EQ(buf.getContent(), "ABX");
+    EXPECT_EQ(buf.getCursorPos(), 3); // ABX|
+
+    // Step 8: undo() - restore C
+    buf.undo();
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 4); // ABXC|
+
+    // Step 9: undo() - moveCursorLeft()
+    buf.undo();
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 3); // ABX|C
+
+    // Step 10: undo() - remove 'X'
+    buf.undo();
+    EXPECT_EQ(buf.getContent(), "ABC");
+    EXPECT_EQ(buf.getCursorPos(), 2); // AB|C
+
+    // Step 11: redo() - insert 'X'
+    buf.redo();
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 3); // ABX|C
+
+    // Step 12: redo() - moveCursorRight()
+    buf.redo();
+    EXPECT_EQ(buf.getContent(), "ABXC");
+    EXPECT_EQ(buf.getCursorPos(), 4); // ABXC|
+
+    // Step 13: redo() - deleteChar() 'C'
+    buf.redo();
+    EXPECT_EQ(buf.getContent(), "ABX");
+    EXPECT_EQ(buf.getCursorPos(), 3); // ABX|
+}
+
+void sample_135(int testNum)
+{
+    TextBuffer buf;
+
+    buf.insert('A'); // A|
+    buf.insert('B'); // AB|
+    buf.insert('C'); // ABC|
+
+    buf.undo(); // AB| (undo C)
+    buf.undo(); // A|  (undo B)
+
+    buf.insert('X'); // AX| (redo stack phải bị xóa)
+
+    buf.redo(); // redo stack rỗng -> không làm gì
+
+    EXPECT_EQ(buf.getContent(), "AX");
+    EXPECT_EQ(buf.getCursorPos(), 2);
+}
+
+void sample_136(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.undo();
+    tb.undo();
+    tb.redo();
+    int cursor = tb.getCursorPos();
+    string result = tb.getContent();
+    assertEqual(result, "H", testNum, "TextBuffer content");
+    assertEqual(cursor, 1, testNum, "TextBuffer cursor position");
+}
+
+void sample_137(int testNum)
+{
+    TextBuffer buf;
+
+    buf.insert('a');
+    buf.insert('b');
+    EXPECT_EQ(buf.getContent(), "ab");
+
+    buf.moveCursorTo(1);
+    buf.insert('x');
+    EXPECT_EQ(buf.getContent(), "axb");
+}
+
+void sample_138(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');
+    buf.moveCursorTo(2); // cursor giữa b và c
+    buf.deleteChar();
+    EXPECT_EQ(buf.getContent(), "ac");
+
+    buf.moveCursorTo(1);
+    buf.deleteChar();
+    EXPECT_EQ(buf.getContent(), "c");
+}
+
+void sample_139(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z');
+    buf.moveCursorTo(3); // cursor sau z
+
+    buf.moveCursorLeft(); // -> 2
+    EXPECT_EQ(buf.getCursorPos(), 2);
+    buf.moveCursorRight(); // -> 3
+    EXPECT_EQ(buf.getCursorPos(), 3);
+}
+
+void sample_140(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');
+    buf.moveCursorTo(1);
+    EXPECT_EQ(buf.getCursorPos(), 1);
+
+    buf.moveCursorTo(3);
+    EXPECT_EQ(buf.getCursorPos(), 3);
+}
+
+void sample_141(int testNum)
+{
+    TextBuffer buf;
+    EXPECT_EQ(buf.getContent(), "");
+
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z');
+    EXPECT_EQ(buf.getContent(), "xyz");
+}
+
+void sample_142(int testNum)
+{
+    TextBuffer buf;
+    EXPECT_EQ(buf.getCursorPos(), 0);
+
+    buf.insert('a');
+    EXPECT_EQ(buf.getCursorPos(), 1);
+}
+
+void sample_143(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('a');
+    buf.insert('c');
+
+    EXPECT_EQ(buf.findFirstOccurrence('a'), 0);
+    EXPECT_EQ(buf.findFirstOccurrence('z'), -1);
+}
+
+void sample_144(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('a');
+    buf.insert('x');
+
+    int count = 0;
+    int *result = buf.findAllOccurrences('a', count);
+    EXPECT_EQ(count, 2);
+    EXPECT_EQ(result[0], 1)
+    EXPECT_EQ(result[1], 3);
+    delete[] result;
+
+    int count2 = 0;
+    int *result2 = buf.findAllOccurrences('z', count2);
+    EXPECT_EQ(count2, 0);
+    delete[] result2;
+}
+
+void sample_145(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');
+    buf.moveCursorTo(0);
+
+    try
+    {
+        buf.deleteChar();
+        throw std::runtime_error("Expected cursor_error not thrown");
+    }
+    catch (const cursor_error &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Cursor error!");
+    }
+}
+
+void sample_146(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('c');
+
+    try
+    {
+        buf.moveCursorRight();
+        throw std::runtime_error("Expected cursor_error not thrown");
+    }
+    catch (const cursor_error &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Cursor error!");
+    }
+}
+
+void sample_147(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('a');
+    buf.insert('b');
+    buf.insert('a');
+    buf.insert('c');
+    buf.insert('a');
+
+    buf.deleteAllOccurrences('a');
+
+    EXPECT_EQ(buf.getContent(), "bc");
+}
+
+void sample_148(int testNum)
+{
+    TextBuffer buf;
+    buf.insert('x');
+    buf.insert('y');
+    buf.insert('z');
+
+    buf.deleteAllOccurrences('a');
+
+    EXPECT_EQ(buf.getContent(), "xyz");
+}
+
+void sample_149(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtHead(10);
+    EXPECT_EQ(list.size(), 1);
+    EXPECT_EQ(list.get(0), 10);
+}
+
+void sample_150(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(20);
+    EXPECT_EQ(list.size(), 1);
+    EXPECT_EQ(list.get(0), 20);
+}
+
+void sample_151(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    list.insertAtTail(3);
+    list.insertAt(1, 2); // insert in the middle
+    EXPECT_EQ(list.size(), 3);
+    EXPECT_EQ(list.get(0), 1);
+    EXPECT_EQ(list.get(1), 2);
+    EXPECT_EQ(list.get(2), 3);
+}
+
+void sample_152(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(2);
+    list.insertAtTail(3);
+    list.insertAt(0, 1); // insert at beginning
+    EXPECT_EQ(list.get(0), 1);
+}
+
+void sample_153(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    list.insertAtTail(2);
+    list.insertAt(2, 3); // insert at end
+    EXPECT_EQ(list.get(2), 3);
+}
+
+void sample_154(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtHead(2);
+    list.insertAtTail(4);
+    list.insertAt(1, 3); // between 2 and 4
+    EXPECT_EQ(list.get(0), 2);
+    EXPECT_EQ(list.get(1), 3);
+    EXPECT_EQ(list.get(2), 4);
+}
+
+void sample_155(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtHead(3);
+    list.insertAtHead(2);
+    list.insertAtHead(1);
+    list.insertAt(1, 9); // 1, 9, 2, 3
+    EXPECT_EQ(list.get(1), 9);
+}
+
+void sample_156(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(10);
+    list.insertAtTail(20);
+    list.insertAtTail(30);
+    list.insertAt(0, 5); // at head
+    EXPECT_EQ(list.get(0), 5);
+}
+
+void sample_157(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(100);
+    list.insertAtHead(50); // becomes head
+    list.insertAt(1, 75);  // between 50 and 100
+    EXPECT_EQ(list.get(0), 50);
+    EXPECT_EQ(list.get(1), 75);
+    EXPECT_EQ(list.get(2), 100);
+}
+
+void sample_158(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtHead(3);
+    list.insertAtTail(6);
+    list.insertAt(1, 4);
+    list.insertAt(2, 5);
+    list.insertAt(0, 2);
+    list.insertAt(0, 1);
+    // Final: 1 2 3 4 5 6
+    for (int i = 0; i < 6; ++i)
+        EXPECT_EQ(list.get(i), i + 1);
+}
+
+void sample_159(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    try
+    {
+        list.insertAt(-1, 100);
+        throw std::runtime_error("Expected std::out_of_range not thrown");
+    }
+    catch (const std::out_of_range &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Index is invalid!");
+    }
+}
+
+void sample_160(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    try
+    {
+        list.insertAt(2, 100); // size = 1, index = 2 → invalid
+        throw std::runtime_error("Expected std::out_of_range not thrown");
+    }
+    catch (const std::out_of_range &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Index is invalid!");
+    }
+}
+
+void sample_161(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAt(0, 1); // hợp lệ vì list đang rỗng (size = 0)
+    list.insertAt(1, 3); // chèn tại cuối (index = size hiện tại = 1)
+    list.insertAt(1, 2); // chèn vào giữa: 1, 2, 3
+    EXPECT_EQ(list.size(), 3);
+    EXPECT_EQ(list.get(0), 1);
+    EXPECT_EQ(list.get(1), 2);
+    EXPECT_EQ(list.get(2), 3);
+}
+
+void sample_162(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    list.insertAtTail(2);
+    list.insertAtTail(3);
+    list.deleteAt(0);
+    EXPECT_EQ(list.get(0), 2);
+    EXPECT_EQ(list.size(), 2);
+}
+
+void sample_163(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(10);
+    list.insertAtTail(20);
+    list.insertAtTail(30);
+    list.deleteAt(2);
+    EXPECT_EQ(list.size(), 2);
+    EXPECT_EQ(list.get(1), 20);
+}
+
+void sample_164(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(5);
+    list.insertAtTail(6);
+    list.insertAtTail(7);
+    list.deleteAt(1);
+    EXPECT_EQ(list.size(), 2);
+    EXPECT_EQ(list.get(1), 7);
+}
+
+void sample_165(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(42);
+    list.deleteAt(0);
+    EXPECT_EQ(list.size(), 0);
+}
+
+void sample_166(int testNum)
+{
+    DoublyLinkedList<int> list;
+    for (int i = 0; i < 5; ++i)
+        list.insertAtTail(i + 1); // 1 2 3 4 5
+    list.deleteAt(0);             // 2 3 4 5
+    list.deleteAt(1);             // 2 4 5
+    list.deleteAt(2);             // 2 4
+    EXPECT_EQ(list.size(), 2);
+    EXPECT_EQ(list.get(0), 2);
+    EXPECT_EQ(list.get(1), 4);
+}
+
+void sample_167(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    try
+    {
+        list.deleteAt(-1);
+        throw std::runtime_error("Expected std::out_of_range not thrown");
+    }
+    catch (const std::out_of_range &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Index is invalid!");
+    }
+}
+
+void sample_168(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtTail(1);
+    try
+    {
+        list.deleteAt(5);
+        throw std::runtime_error("Expected std::out_of_range not thrown");
+    }
+    catch (const std::out_of_range &e)
+    {
+        EXPECT_EQ(std::string(e.what()), "Index is invalid!");
+    }
+}
+void sample_169(int testNum)
+{
+    DoublyLinkedList<int> list;
+    list.insertAtHead(2); // 2
+    list.insertAtTail(4); // 2 4
+    list.insertAt(1, 3);  // 2 3 4
+    list.deleteAt(1);     // 2 4
+    EXPECT_EQ(list.get(1), 4);
+    EXPECT_EQ(list.size(), 2);
+}
+
+void sample_170(int testNum)
+{
+    DoublyLinkedList<int> list;
+    for (int i = 0; i < 5; ++i)
+        list.insertAtTail(i); // 0 1 2 3 4
+    for (int i = 0; i < 5; ++i)
+        list.deleteAt(0); // empty
+    EXPECT_EQ(list.size(), 0);
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -2078,7 +2826,58 @@ void run_tests()
     sample_117(117);
     sample_118(118);
     sample_119(119);
-
+    cout << COLOR_PURPLE << "Running additional tests from VT..." << COLOR_RESET << endl;
+    sample_120(120);
+    sample_121(121);
+    sample_122(122);
+    sample_123(123);
+    sample_124(124);
+    sample_125(125);
+    sample_126(126);
+    sample_127(127);
+    sample_128(128);
+    sample_129(129);
+    sample_130(130);
+    sample_131(131);
+    sample_132(132);
+    sample_133(133);
+    sample_134(134);
+    sample_135(135);
+    sample_136(136);
+    sample_137(137);
+    sample_138(138);
+    sample_139(139);
+    sample_140(140);
+    sample_141(141);
+    sample_142(142);
+    sample_143(143);
+    sample_144(144);
+    sample_145(145);
+    sample_146(146);
+    sample_147(147);
+    sample_148(148);
+    sample_149(149);
+    sample_150(150);
+    sample_151(151);
+    sample_152(152);
+    sample_153(153);
+    sample_154(154);
+    sample_155(155);
+    sample_156(156);
+    sample_157(157);
+    sample_158(158);
+    sample_159(159);
+    sample_160(160);
+    sample_161(161);
+    sample_162(162);
+    sample_163(163);
+    sample_164(164);
+    sample_165(165);
+    sample_166(166);
+    sample_167(167);
+    sample_168(168);
+    sample_169(169);
+    sample_170(170);
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
 
