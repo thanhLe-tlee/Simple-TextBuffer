@@ -19,6 +19,7 @@ void assertEqual(const T &actual, const T &expected, int testNum, const string &
         cout << "Test " << testNum << ": " << COLOR_GREEN << "Passed" << COLOR_RESET;
         if (!msg.empty())
             cout << " - " << msg;
+        cout << "\n  Expected: " << expected << "\n  Actual:   " << actual << endl;
         cout << endl;
     }
     else
@@ -2703,6 +2704,19 @@ void sample_170(int testNum)
     EXPECT_EQ(list.size(), 0);
 }
 
+void sample_171(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.deleteChar(); 
+    tb.sortAscending();
+    string *result = tb.printStringHistory();
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (delete, 2, l), (sort, 0, )]";
+    assertEqual(*result, expected, testNum, "TextBuffer printHistory after sort");
+    delete result;
+}
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -2878,6 +2892,8 @@ void run_tests()
     sample_168(168);
     sample_169(169);
     sample_170(170);
+    sample_171(171);
+
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }
 

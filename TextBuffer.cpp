@@ -725,6 +725,7 @@ void TextBuffer::HistoryManager::printHistory() const
         historyStr += "(" + curr->action->actionName + ", " + to_string(curr->action->cursorPos) + ", ";
         if (curr->action->data == '\0')
         {
+            // cộng thêm ký tự null vào chuỗi hoặc để trống đều được
             historyStr += "\0";
         }
         else
