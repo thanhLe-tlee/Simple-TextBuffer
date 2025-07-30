@@ -98,6 +98,7 @@ private:
     HistoryManager *historyManager;
 
     // TODO: may provide some attributes
+    void performSort();
 
 public:
     TextBuffer();
@@ -137,8 +138,9 @@ public:
             string actionName;
             int cursorPos;
             char data;
-            int targetPos; 
-            Action(string name, int pos, char c, int target = -1) : actionName(name), cursorPos(pos), data(c), targetPos(target) {}
+            int targetPos;
+            string originalContent; // For sort operations to store original content
+            Action(string name, int pos, char c, int target = -1, string content = "") : actionName(name), cursorPos(pos), data(c), targetPos(target), originalContent(content) {}
         };
 
         class Node
@@ -174,7 +176,7 @@ public:
         HistoryManager();
         ~HistoryManager();
         string *getHistoryString() const;
-        void addAction(const string &actionName, int cursorPos, char c, int targetPos = -1);
+        void addAction(const string &actionName, int cursorPos, char c, int targetPos = -1, const string &originalContent = "");
         void printHistory() const;
         int size() const;
 

@@ -518,7 +518,7 @@ int *TextBuffer::findAllOccurrences(char c, int &count) const
     return listOccurrenceIndexes;
 }
 
-void TextBuffer::sortAscending()
+void TextBuffer::performSort()
 {
     DoublyLinkedList<char> tempList;
     while (buffer.size() > 0)
@@ -546,8 +546,17 @@ void TextBuffer::sortAscending()
     tempList.setHead(nullptr);
     tempList.setTail(nullptr);
     tempList.setCount(0);
-    historyManager->addAction("sort", cursorPos, '\0');
     cursorPos = 0;
+}
+
+void TextBuffer::sortAscending()
+{
+    string originalContent = getContent();
+    int originalCursorPos = cursorPos;
+
+    performSort();
+
+    historyManager->addAction("sort", originalCursorPos, '\0', -1, originalContent);
 }
 
 void TextBuffer::deleteAllOccurrences(char c)
@@ -599,6 +608,18 @@ void TextBuffer::undo()
     }
     else if (actionToUndo->actionName == "sort")
     {
+        while (buffer.size() > 0)
+        {
+            buffer.deleteAt(0);
+        }
+
+        // Trả lại nội dung gốc
+        for (int i = 0; i < actionToUndo->originalContent.length(); i++)
+        {
+            buffer.insertAtTail(actionToUndo->originalContent[i]);
+        }
+
+        // Chỗ này update lại cursorPos về vị trí trước khi sort
         cursorPos = actionToUndo->cursorPos;
     }
 
@@ -655,7 +676,7 @@ void TextBuffer::redo()
     }
     else if (actionToRedo->actionName == "sort")
     {
-        sortAscending();
+        performSort();
     }
 }
 
@@ -690,10 +711,10 @@ TextBuffer::HistoryManager::~HistoryManager()
 
 // TODO: implement other methods of HistoryManager
 
-void TextBuffer::HistoryManager::addAction(const string &actionName, int cursorPos, char c, int targetPos)
+void TextBuffer::HistoryManager::addAction(const string &actionName, int cursorPos, char c, int targetPos, const string &originalContent)
 {
     clearRedoHistory();
-    Action *newAction = new Action(actionName, cursorPos, c, targetPos);
+    Action *newAction = new Action(actionName, cursorPos, c, targetPos, originalContent);
     Node *newNode = new Node(newAction);
     if (actionHead == nullptr)
     {
