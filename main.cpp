@@ -164,7 +164,7 @@ void sample_09(int testNum)
     dll.insertAtHead(3);
     dll.insertAtHead(4.5);
     string result = dll.toString();
-    string expected = "[4.500000, 3.000000, 2.000000, 1.000000]";
+    string expected = "[4.5, 3, 2, 1]";
     assertEqual(result, expected, testNum, "Insert at head");
 }
 
@@ -198,7 +198,7 @@ void sample_12(int testNum)
     dll.insertAtHead(0.5);
     dll.insertAtTail(3.3);
     string result = dll.toString();
-    string expected = "[0.500000, 1.100000, 2.200000, 3.300000]";
+    string expected = "[0.5, 1.1, 2.2, 3.3]";
     assertEqual(result, expected, testNum, "Insert at head and tail");
 }
 
@@ -2716,6 +2716,23 @@ void sample_171(int testNum)
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after sort");
     delete result;
 }
+
+void sample_172(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('A');
+    tb.insert('B');
+    tb.insert('C');
+    tb.undo();
+    tb.moveCursorLeft();
+    tb.redo();
+    string result = tb.getContent();
+    int cursor = tb.getCursorPos();
+    string expected = "AB";
+    assertEqual(result, expected, testNum, "TextBuffer deleteChar at cursor position");
+    assertEqual(cursor, 1, testNum, "TextBuffer cursor position after redo");
+}
+
 // ---------------------------------------------------- //
 
 void run_tests()
@@ -2892,6 +2909,7 @@ void run_tests()
     sample_169(169);
     sample_170(170);
     sample_171(171);
+    sample_172(172);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }

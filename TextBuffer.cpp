@@ -339,7 +339,10 @@ string DoublyLinkedList<T>::toString(string (*convert2str)(T &)) const
         {
             if constexpr (is_same<T, int>::value || is_same<T, double>::value || is_same<T, float>::value)
             {
-                strList += to_string(curr->data);
+                // strList += to_string(curr->data);
+                stringstream ss;
+                ss << curr->data;
+                strList += ss.str();
             }
             else if constexpr (is_same<T, char>::value)
             {
@@ -352,7 +355,10 @@ string DoublyLinkedList<T>::toString(string (*convert2str)(T &)) const
             else
             {
                 // for point type
-                strList += "Point(" + to_string(curr->data.getX()) + ", " + to_string(curr->data.getY()) + ")";
+                // strList += "Point(" + to_string(curr->data.getX()) + ", " + to_string(curr->data.getY()) + ")";
+                stringstream ss;
+                ss << "Point(" << curr->data.getX() << ", " << curr->data.getY() << ")";
+                strList += ss.str();
             }
         }
         if (i != count - 1)
