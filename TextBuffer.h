@@ -139,7 +139,7 @@ public:
             int cursorPos;
             char data;
             int targetPos;
-            string originalContent; // For sort operations to store original content
+            string originalContent; 
             Action(string name, int pos, char c, int target = -1, string content = "") : actionName(name), cursorPos(pos), data(c), targetPos(target), originalContent(content) {}
         };
 
