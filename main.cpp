@@ -1616,7 +1616,7 @@ void sample_104(int testNum)
     tb.moveCursorTo(1);
     tb.deleteChar();
     string *result = tb.printStringHistory();
-    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (move, 5, J), (delete, 0, H)]";
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (move, 5, J), (delete, 1, H)]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory");
     delete result;
 }
@@ -1640,7 +1640,7 @@ void sample_105(int testNum)
     int cursor = tb.getCursorPos();
     assertEqual(cursor, 0, testNum, "TextBuffer cursor position after undo");
     assertEqual(tb.getContent(), "ello", testNum, "TextBuffer content after undo");
-    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (move, 5, J), (delete, 0, H), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, )]";
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (move, 5, J), (delete, 1, H), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, )]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
     delete result;
 }
@@ -1670,7 +1670,7 @@ void sample_106(int testNum)
     int cursor = tb.getCursorPos();
     assertEqual(cursor, 0, testNum, "TextBuffer cursor position after undo");
     assertEqual(tb.getContent(), "eHllloYyZz", testNum, "TextBuffer content after undo");
-    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 0, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, )]";
+    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 1, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, )]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
     delete result;
 }
@@ -1702,7 +1702,7 @@ void sample_107(int testNum)
     int cursor = tb.getCursorPos();
     assertEqual(cursor, 1, testNum, "TextBuffer cursor position after undo");
     assertEqual(tb.getContent(), "eHoYyZz", testNum, "TextBuffer content after undo");
-    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 0, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, R)]";
+    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 1, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, R)]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
     delete result;
 }
@@ -1736,7 +1736,7 @@ void sample_108(int testNum)
     assertEqual(index, -1, testNum, "TextBuffer find first occurrence after undo");
     assertEqual(cursor, 1, testNum, "TextBuffer cursor position after undo");
     assertEqual(tb.getContent(), "eHoYyZz", testNum, "TextBuffer content after undo");
-    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 0, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, R)]";
+    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 1, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, R)]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
     delete result;
 }
@@ -2714,7 +2714,7 @@ void sample_171(int testNum)
     tb.deleteChar();
     tb.sortAscending();
     string *result = tb.printStringHistory();
-    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (delete, 2, l), (sort, 2, )]";
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (delete, 3, l), (sort, 2, )]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after sort");
     delete result;
 }
@@ -2788,10 +2788,31 @@ void sample_174(int testNum)
     assertEqual(index, -1, testNum, "TextBuffer find first occurrence");
     assertEqual(cursor, 0, testNum, "TextBuffer cursor position after undo");
     assertEqual(tb.getContent(), "eHoYyZz", testNum, "TextBuffer content after undo");
-    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 0, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, J)]";
+    string expected = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 1, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, J)]";
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after undo");
-    string expected_2 = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 0, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, J), (sort, 3, )]";
+    string expected_2 = "[(insert, 0, X), (insert, 1, Y), (insert, 2, Z), (insert, 3, z), (insert, 4, y), (insert, 5, l), (insert, 6, H), (insert, 7, e), (insert, 8, l), (insert, 9, l), (insert, 10, o), (move, 11, J), (delete, 1, X), (move, 0, J), (move, 2, R), (move, 3, L), (move, 2, L), (sort, 1, ), (delete, 4, l), (delete, 3, l), (delete, 2, l), (move, 0, J), (sort, 3, )]";
     assertEqual(*tb.printStringHistory(), expected_2, testNum, "TextBuffer printHistory after sort");
+    delete result;
+}
+
+void sample_175(int testNum)
+{
+    TextBuffer tb;
+    tb.insert('H');
+    tb.insert('e');
+    tb.insert('l');
+    tb.insert('l');
+    tb.insert('o');
+    tb.deleteChar();
+    tb.moveCursorTo(2);
+    tb.deleteChar();
+    string* result = tb.printStringHistory();
+    string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (delete, 5, o), (move, 4, J), (delete, 2, e)]";
+    int cursor = tb.getCursorPos();
+    string expected_2 = "Hll";
+    assertEqual(cursor, 1, testNum, "TextBuffer cursor position after delete char");
+    assertEqual(tb.getContent(), expected_2, testNum, "TextBuffer content after delete char");
+    assertEqual(*result, expected, testNum, "TextBuffer printHistory after delete char");
     delete result;
 }
 
@@ -2974,6 +2995,7 @@ void run_tests()
     sample_172(172);
     sample_173(173);
     sample_174(174);
+    sample_175(175);
 
     cout << COLOR_PURPLE << "All tests completed!" << COLOR_RESET << endl;
 }

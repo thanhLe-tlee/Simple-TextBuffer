@@ -448,7 +448,7 @@ void TextBuffer::deleteChar()
     }
 
     char deletedChar = buffer.get(cursorPos - 1);
-    historyManager->addAction("delete", cursorPos - 1, deletedChar);
+    historyManager->addAction("delete", cursorPos, deletedChar);
     buffer.deleteAt(cursorPos - 1);
     cursorPos--;
 }
@@ -567,7 +567,7 @@ void TextBuffer::deleteAllOccurrences(char c)
         buffer.deleteAt(indexes[i]);
         if (cursorPos > indexes[i])
             cursorPos--;
-        historyManager->addAction("delete", indexes[i], c);
+        historyManager->addAction("delete", indexes[i], c, -2);
     }
 
     if (cursorPos > buffer.size())
@@ -599,8 +599,16 @@ void TextBuffer::undo()
     }
     else if (actionToUndo->actionName == "delete")
     {
-        buffer.insertAt(actionToUndo->cursorPos, actionToUndo->data);
-        cursorPos = actionToUndo->cursorPos + 1;
+        if (actionToUndo->targetPos == -2)
+        {
+            buffer.insertAt(actionToUndo->cursorPos, actionToUndo->data);
+            cursorPos = actionToUndo->cursorPos + 1;
+        }
+        else
+        {
+            buffer.insertAt(actionToUndo->cursorPos - 1, actionToUndo->data);
+            cursorPos = actionToUndo->cursorPos;
+        }
     }
     else if (actionToUndo->actionName == "move")
     {
@@ -656,8 +664,16 @@ void TextBuffer::redo()
     }
     else if (actionToRedo->actionName == "delete")
     {
-        buffer.deleteAt(actionToRedo->cursorPos);
-        cursorPos = actionToRedo->cursorPos;
+        if (actionToRedo->targetPos == -2)
+        {
+            buffer.deleteAt(actionToRedo->cursorPos);
+            cursorPos = actionToRedo->cursorPos;
+        }
+        else
+        {
+            buffer.deleteAt(actionToRedo->cursorPos - 1);
+            cursorPos = actionToRedo->cursorPos - 1;
+        }
     }
     else if (actionToRedo->actionName == "move")
     {
