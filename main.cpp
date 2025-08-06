@@ -1,4 +1,3 @@
-
 #include "TextBuffer.h"
 
 #ifdef _WIN32
@@ -2806,13 +2805,16 @@ void sample_175(int testNum)
     tb.deleteChar();
     tb.moveCursorTo(2);
     tb.deleteChar();
-    string* result = tb.printStringHistory();
+    string *result = tb.printStringHistory();
     string expected = "[(insert, 0, H), (insert, 1, e), (insert, 2, l), (insert, 3, l), (insert, 4, o), (delete, 5, o), (move, 4, J), (delete, 2, e)]";
     int cursor = tb.getCursorPos();
     string expected_2 = "Hll";
     assertEqual(cursor, 1, testNum, "TextBuffer cursor position after delete char");
     assertEqual(tb.getContent(), expected_2, testNum, "TextBuffer content after delete char");
     assertEqual(*result, expected, testNum, "TextBuffer printHistory after delete char");
+    cout << expected << endl;
+    tb.printHistory();
+    tb.printHistory();
     delete result;
 }
 
