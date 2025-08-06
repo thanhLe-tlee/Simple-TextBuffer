@@ -2,7 +2,9 @@
 
 ## Course: CO2003 - Data Structures and Algorithms  
 **Ho Chi Minh City University of Technology – Faculty of Computer Science and Engineering**
+
 --- 
+
 ## 📌 Overview
 
 This project implements a **simple text editor buffer** using **Object-Oriented Programming (OOP)** principles and a **Doubly Linked List (DLL)**.  
